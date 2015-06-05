@@ -1,0 +1,474 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="RegisterModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="notarys">
+          <Key>
+            <PropertyRef Name="idNotary" />
+          </Key>
+          <Property Name="idNotary" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="MiddleName" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="Region" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="persons">
+          <Key>
+            <PropertyRef Name="idPerson" />
+          </Key>
+          <Property Name="idPerson" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="145" Nullable="false" />
+          <Property Name="Middlename" Type="varchar" MaxLength="145" />
+          <Property Name="LastName" Type="varchar" MaxLength="145" />
+          <Property Name="Code" Type="int" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="poas">
+          <Key>
+            <PropertyRef Name="idPOA" />
+          </Key>
+          <Property Name="idPOA" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Blankid" Type="int" Nullable="false" />
+          <Property Name="SertDate" Type="date" Nullable="false" />
+          <Property Name="EndDate" Type="date" Nullable="false" />
+          <Property Name="Irrevocable" Type="bool" Nullable="false" />
+          <Property Name="NumInReg" Type="int" Nullable="false" />
+          <Property Name="Person_idPerson" Type="int" Nullable="false" />
+          <Property Name="Subject_idSubject" Type="int" Nullable="false" />
+          <Property Name="idWitness" Type="int" />
+          <Property Name="IdRegistrator" Type="int" Nullable="false" />
+          <Property Name="Suspention_idSuspention" Type="int" />
+        </EntityType>
+        <EntityType Name="subjects">
+          <Key>
+            <PropertyRef Name="idSubject" />
+          </Key>
+          <Property Name="idSubject" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="SerId" Type="int" />
+          <Property Name="RegId" Type="int" />
+          <Property Name="Info" Type="varchar" MaxLength="345" Nullable="false" />
+        </EntityType>
+        <EntityType Name="suspentions">
+          <Key>
+            <PropertyRef Name="idSuspention" />
+          </Key>
+          <Property Name="idSuspention" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NameOfDocument" Type="varchar" MaxLength="145" Nullable="false" />
+          <Property Name="idNotary" Type="int" Nullable="false" />
+          <Property Name="idPerson" Type="int" Nullable="false" />
+          <Property Name="DateOfDocument" Type="date" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_POA_Notary1">
+          <End Role="notarys" Type="Self.notarys" Multiplicity="0..1" />
+          <End Role="poas" Type="Self.poas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="notarys">
+              <PropertyRef Name="idNotary" />
+            </Principal>
+            <Dependent Role="poas">
+              <PropertyRef Name="idWitness" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_POA_Notary2">
+          <End Role="notarys" Type="Self.notarys" Multiplicity="1" />
+          <End Role="poas" Type="Self.poas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="notarys">
+              <PropertyRef Name="idNotary" />
+            </Principal>
+            <Dependent Role="poas">
+              <PropertyRef Name="IdRegistrator" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_POA_Person1">
+          <End Role="persons" Type="Self.persons" Multiplicity="1" />
+          <End Role="poas" Type="Self.poas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="persons">
+              <PropertyRef Name="idPerson" />
+            </Principal>
+            <Dependent Role="poas">
+              <PropertyRef Name="Person_idPerson" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_POA_Subject1">
+          <End Role="subjects" Type="Self.subjects" Multiplicity="1" />
+          <End Role="poas" Type="Self.poas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="subjects">
+              <PropertyRef Name="idSubject" />
+            </Principal>
+            <Dependent Role="poas">
+              <PropertyRef Name="Subject_idSubject" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_POA_Suspention1">
+          <End Role="suspentions" Type="Self.suspentions" Multiplicity="0..1" />
+          <End Role="poas" Type="Self.poas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="suspentions">
+              <PropertyRef Name="idSuspention" />
+            </Principal>
+            <Dependent Role="poas">
+              <PropertyRef Name="Suspention_idSuspention" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Suspention_Notary1">
+          <End Role="notarys" Type="Self.notarys" Multiplicity="1" />
+          <End Role="suspentions" Type="Self.suspentions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="notarys">
+              <PropertyRef Name="idNotary" />
+            </Principal>
+            <Dependent Role="suspentions">
+              <PropertyRef Name="idNotary" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Suspention_Person1">
+          <End Role="persons" Type="Self.persons" Multiplicity="1" />
+          <End Role="suspentions" Type="Self.suspentions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="persons">
+              <PropertyRef Name="idPerson" />
+            </Principal>
+            <Dependent Role="suspentions">
+              <PropertyRef Name="idPerson" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RegisterModelStoreContainer">
+          <EntitySet Name="notarys" EntityType="Self.notarys" Schema="mydb" store:Type="Tables" />
+          <EntitySet Name="persons" EntityType="Self.persons" Schema="mydb" store:Type="Tables" />
+          <EntitySet Name="poas" EntityType="Self.poas" Schema="mydb" store:Type="Tables" />
+          <EntitySet Name="subjects" EntityType="Self.subjects" Schema="mydb" store:Type="Tables" />
+          <EntitySet Name="suspentions" EntityType="Self.suspentions" Schema="mydb" store:Type="Tables" />
+          <AssociationSet Name="fk_POA_Notary1" Association="Self.fk_POA_Notary1">
+            <End Role="notarys" EntitySet="notarys" />
+            <End Role="poas" EntitySet="poas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_POA_Notary2" Association="Self.fk_POA_Notary2">
+            <End Role="notarys" EntitySet="notarys" />
+            <End Role="poas" EntitySet="poas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_POA_Person1" Association="Self.fk_POA_Person1">
+            <End Role="persons" EntitySet="persons" />
+            <End Role="poas" EntitySet="poas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_POA_Subject1" Association="Self.fk_POA_Subject1">
+            <End Role="subjects" EntitySet="subjects" />
+            <End Role="poas" EntitySet="poas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_POA_Suspention1" Association="Self.fk_POA_Suspention1">
+            <End Role="suspentions" EntitySet="suspentions" />
+            <End Role="poas" EntitySet="poas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Suspention_Notary1" Association="Self.fk_Suspention_Notary1">
+            <End Role="notarys" EntitySet="notarys" />
+            <End Role="suspentions" EntitySet="suspentions" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Suspention_Person1" Association="Self.fk_Suspention_Person1">
+            <End Role="persons" EntitySet="persons" />
+            <End Role="suspentions" EntitySet="suspentions" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RegisterModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="notary">
+          <Key>
+            <PropertyRef Name="idNotary" />
+          </Key>
+          <Property Name="idNotary" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="MiddleName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Region" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="poas" Relationship="Self.fk_POA_Notary1" FromRole="notarys" ToRole="poas" />
+          <NavigationProperty Name="poas1" Relationship="Self.fk_POA_Notary2" FromRole="notarys" ToRole="poas" />
+          <NavigationProperty Name="suspentions" Relationship="Self.fk_Suspention_Notary1" FromRole="notarys" ToRole="suspentions" />
+        </EntityType>
+        <EntityType Name="person">
+          <Key>
+            <PropertyRef Name="idPerson" />
+          </Key>
+          <Property Name="idPerson" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="145" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Middlename" Type="String" MaxLength="145" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="145" FixedLength="false" Unicode="false" />
+          <Property Name="Code" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="RegisterModel.PersonType" Nullable="false" />
+          <NavigationProperty Name="poas" Relationship="Self.fk_POA_Person1" FromRole="persons" ToRole="poas" />
+          <NavigationProperty Name="suspentions" Relationship="Self.fk_Suspention_Person1" FromRole="persons" ToRole="suspentions" />
+        </EntityType>
+        <EntityType Name="poa">
+          <Key>
+            <PropertyRef Name="idPOA" />
+          </Key>
+          <Property Name="idPOA" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Blankid" Type="Int32" Nullable="false" />
+          <Property Name="SertDate" Type="DateTime" Nullable="false" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" />
+          <Property Name="Irrevocable" Type="Boolean" Nullable="false" />
+          <Property Name="NumInReg" Type="Int32" Nullable="false" />
+          <Property Name="Person_idPerson" Type="Int32" Nullable="false" />
+          <Property Name="Subject_idSubject" Type="Int32" Nullable="false" />
+          <Property Name="idWitness" Type="Int32" />
+          <Property Name="IdRegistrator" Type="Int32" Nullable="false" />
+          <Property Name="Suspention_idSuspention" Type="Int32" />
+          <NavigationProperty Name="notary" Relationship="Self.fk_POA_Notary1" FromRole="poas" ToRole="notarys" />
+          <NavigationProperty Name="notary1" Relationship="Self.fk_POA_Notary2" FromRole="poas" ToRole="notarys" />
+          <NavigationProperty Name="person" Relationship="Self.fk_POA_Person1" FromRole="poas" ToRole="persons" />
+          <NavigationProperty Name="subject" Relationship="Self.fk_POA_Subject1" FromRole="poas" ToRole="subjects" />
+          <NavigationProperty Name="suspention" Relationship="Self.fk_POA_Suspention1" FromRole="poas" ToRole="suspentions" />
+        </EntityType>
+        <EntityType Name="subject">
+          <Key>
+            <PropertyRef Name="idSubject" />
+          </Key>
+          <Property Name="idSubject" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="SerId" Type="Int32" />
+          <Property Name="RegId" Type="Int32" />
+          <Property Name="Info" Type="String" MaxLength="345" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="poas" Relationship="Self.fk_POA_Subject1" FromRole="subjects" ToRole="poas" />
+        </EntityType>
+        <EntityType Name="suspention">
+          <Key>
+            <PropertyRef Name="idSuspention" />
+          </Key>
+          <Property Name="idSuspention" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameOfDocument" Type="String" MaxLength="145" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="idNotary" Type="Int32" Nullable="false" />
+          <Property Name="idPerson" Type="Int32" Nullable="false" />
+          <Property Name="DateOfDocument" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="notary" Relationship="Self.fk_Suspention_Notary1" FromRole="suspentions" ToRole="notarys" />
+          <NavigationProperty Name="person" Relationship="Self.fk_Suspention_Person1" FromRole="suspentions" ToRole="persons" />
+          <NavigationProperty Name="poas" Relationship="Self.fk_POA_Suspention1" FromRole="suspentions" ToRole="poas" />
+        </EntityType>
+        <Association Name="fk_POA_Notary1">
+          <End Role="notarys" Type="Self.notary" Multiplicity="0..1" />
+          <End Role="poas" Type="Self.poa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="notarys">
+              <PropertyRef Name="idNotary" />
+            </Principal>
+            <Dependent Role="poas">
+              <PropertyRef Name="idWitness" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_POA_Notary2">
+          <End Role="notarys" Type="Self.notary" Multiplicity="1" />
+          <End Role="poas" Type="Self.poa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="notarys">
+              <PropertyRef Name="idNotary" />
+            </Principal>
+            <Dependent Role="poas">
+              <PropertyRef Name="IdRegistrator" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Suspention_Notary1">
+          <End Role="notarys" Type="Self.notary" Multiplicity="1" />
+          <End Role="suspentions" Type="Self.suspention" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="notarys">
+              <PropertyRef Name="idNotary" />
+            </Principal>
+            <Dependent Role="suspentions">
+              <PropertyRef Name="idNotary" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_POA_Person1">
+          <End Role="persons" Type="Self.person" Multiplicity="1" />
+          <End Role="poas" Type="Self.poa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="persons">
+              <PropertyRef Name="idPerson" />
+            </Principal>
+            <Dependent Role="poas">
+              <PropertyRef Name="Person_idPerson" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_Suspention_Person1">
+          <End Role="persons" Type="Self.person" Multiplicity="1" />
+          <End Role="suspentions" Type="Self.suspention" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="persons">
+              <PropertyRef Name="idPerson" />
+            </Principal>
+            <Dependent Role="suspentions">
+              <PropertyRef Name="idPerson" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_POA_Subject1">
+          <End Role="subjects" Type="Self.subject" Multiplicity="1" />
+          <End Role="poas" Type="Self.poa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="subjects">
+              <PropertyRef Name="idSubject" />
+            </Principal>
+            <Dependent Role="poas">
+              <PropertyRef Name="Subject_idSubject" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_POA_Suspention1">
+          <End Role="suspentions" Type="Self.suspention" Multiplicity="0..1" />
+          <End Role="poas" Type="Self.poa" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="suspentions">
+              <PropertyRef Name="idSuspention" />
+            </Principal>
+            <Dependent Role="poas">
+              <PropertyRef Name="Suspention_idSuspention" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RegisterEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="notarys" EntityType="Self.notary" />
+          <EntitySet Name="persons" EntityType="Self.person" />
+          <EntitySet Name="poas" EntityType="Self.poa" />
+          <EntitySet Name="subjects" EntityType="Self.subject" />
+          <EntitySet Name="suspentions" EntityType="Self.suspention" />
+          <AssociationSet Name="fk_POA_Notary1" Association="Self.fk_POA_Notary1">
+            <End Role="notarys" EntitySet="notarys" />
+            <End Role="poas" EntitySet="poas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_POA_Notary2" Association="Self.fk_POA_Notary2">
+            <End Role="notarys" EntitySet="notarys" />
+            <End Role="poas" EntitySet="poas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Suspention_Notary1" Association="Self.fk_Suspention_Notary1">
+            <End Role="notarys" EntitySet="notarys" />
+            <End Role="suspentions" EntitySet="suspentions" />
+          </AssociationSet>
+          <AssociationSet Name="fk_POA_Person1" Association="Self.fk_POA_Person1">
+            <End Role="persons" EntitySet="persons" />
+            <End Role="poas" EntitySet="poas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_Suspention_Person1" Association="Self.fk_Suspention_Person1">
+            <End Role="persons" EntitySet="persons" />
+            <End Role="suspentions" EntitySet="suspentions" />
+          </AssociationSet>
+          <AssociationSet Name="fk_POA_Subject1" Association="Self.fk_POA_Subject1">
+            <End Role="subjects" EntitySet="subjects" />
+            <End Role="poas" EntitySet="poas" />
+          </AssociationSet>
+          <AssociationSet Name="fk_POA_Suspention1" Association="Self.fk_POA_Suspention1">
+            <End Role="suspentions" EntitySet="suspentions" />
+            <End Role="poas" EntitySet="poas" />
+          </AssociationSet>
+        </EntityContainer>
+        <EnumType Name="PersonType">
+          <Member Name="Physical" />
+          <Member Name="Juridical" />
+        </EnumType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RegisterModelStoreContainer" CdmEntityContainer="RegisterEntities">
+          <EntitySetMapping Name="notarys">
+            <EntityTypeMapping TypeName="RegisterModel.notary">
+              <MappingFragment StoreEntitySet="notarys">
+                <ScalarProperty Name="idNotary" ColumnName="idNotary" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="persons">
+            <EntityTypeMapping TypeName="RegisterModel.person">
+              <MappingFragment StoreEntitySet="persons">
+                <ScalarProperty Name="idPerson" ColumnName="idPerson" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Middlename" ColumnName="Middlename" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="poas">
+            <EntityTypeMapping TypeName="RegisterModel.poa">
+              <MappingFragment StoreEntitySet="poas">
+                <ScalarProperty Name="idPOA" ColumnName="idPOA" />
+                <ScalarProperty Name="Blankid" ColumnName="Blankid" />
+                <ScalarProperty Name="SertDate" ColumnName="SertDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="Irrevocable" ColumnName="Irrevocable" />
+                <ScalarProperty Name="NumInReg" ColumnName="NumInReg" />
+                <ScalarProperty Name="Person_idPerson" ColumnName="Person_idPerson" />
+                <ScalarProperty Name="Subject_idSubject" ColumnName="Subject_idSubject" />
+                <ScalarProperty Name="idWitness" ColumnName="idWitness" />
+                <ScalarProperty Name="IdRegistrator" ColumnName="IdRegistrator" />
+                <ScalarProperty Name="Suspention_idSuspention" ColumnName="Suspention_idSuspention" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="subjects">
+            <EntityTypeMapping TypeName="RegisterModel.subject">
+              <MappingFragment StoreEntitySet="subjects">
+                <ScalarProperty Name="idSubject" ColumnName="idSubject" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="SerId" ColumnName="SerId" />
+                <ScalarProperty Name="RegId" ColumnName="RegId" />
+                <ScalarProperty Name="Info" ColumnName="Info" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="suspentions">
+            <EntityTypeMapping TypeName="RegisterModel.suspention">
+              <MappingFragment StoreEntitySet="suspentions">
+                <ScalarProperty Name="idSuspention" ColumnName="idSuspention" />
+                <ScalarProperty Name="NameOfDocument" ColumnName="NameOfDocument" />
+                <ScalarProperty Name="idNotary" ColumnName="idNotary" />
+                <ScalarProperty Name="idPerson" ColumnName="idPerson" />
+                <ScalarProperty Name="DateOfDocument" ColumnName="DateOfDocument" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
